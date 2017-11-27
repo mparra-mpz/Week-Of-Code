@@ -1,25 +1,18 @@
 TARGET = blink
 CC = gcc
 CFLAGS = -c -g -Wall
-LDFLAGS = -lm
-LIBS = -lwiringPi
+LDFLAGS = -lwiringPi
 
-.PHONY: default all clean
-
-default: $(TARGET)
+.PHONY: all clean
 
 OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
 HEADERS = $(wildcard *.h)
 
 %.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
-.PRECIOUS: $(TARGET) $(OBJECTS)
-
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
-
-all: default
+all: $(OBJECTS)
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $(TARGET)
 
 clean:
 	-rm -f *.o

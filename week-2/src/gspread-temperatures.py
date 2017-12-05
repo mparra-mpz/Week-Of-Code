@@ -22,7 +22,6 @@ def menu():
     (options, args) = parser.parse_args()
     if options.credential_file is None:
         parser.error("The program needs a credintial file.")
-
     return options.credential_file
 
 if __name__ == "__main__":

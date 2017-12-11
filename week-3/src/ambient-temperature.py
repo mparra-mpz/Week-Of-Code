@@ -2,10 +2,14 @@
 
 #
 # Author: Manuel Parra Z.
-# Date: 10/12/2016
+# Date: 10/12/2017
 # License: MIT License
 # Hardware:
-# Description:
+#       - Arduino Uno R3
+#       - TMP36GZ Sensor.
+# Description: Project to read from the serial port the ambient temperature,
+# then publish the temperature in the cloud using gspread.
+# Link: https://github.com/mparra-mpz/week-of-code/wiki/Week-3:-Raspberry-Room-Temperatures
 #
 
 import subprocess

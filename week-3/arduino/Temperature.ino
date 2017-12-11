@@ -1,13 +1,13 @@
 /*
  * Author: Manuel Parra Z.
- * Date: 10/12/2016
+ * Date: 10/12/2017
  * License: MIT License
  * Hardware:
  *      - Arduino Uno R3
  *      - TMP36GZ Sensor.
- * Description: Project to Measure ambient temperature using
- * an Arduino Uno R3 and a TMP36GZ sensor. 
- * Link:
+ * Description: Project to Measure ambient temperature using an Arduino Uno R3
+ * and a TMP36GZ sensor. 
+ * Link: https://github.com/mparra-mpz/week-of-code/wiki/Week-3:-Raspberry-Room-Temperatures
  */
 
 const int sensorPin = A0;

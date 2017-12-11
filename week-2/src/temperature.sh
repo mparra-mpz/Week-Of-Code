@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#
+# Author: Manuel Parra Z.
+# Date: 10/12/2017
+# License: MIT License
+# Hardware:
+#       - Raspberry Pi B+
+# Description: Project to measure the CPU and GPU temperatures in the Raspberry.
+# Link: https://github.com/mparra-mpz/week-of-code/wiki/Week-2:-Rasberry-Temperatures
+#
+
 # Timestamp.
 timestamp=$(date +"%d/%m/%Y %H:%M:%S")
 

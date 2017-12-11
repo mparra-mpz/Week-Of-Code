@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+#
+# Author: Manuel Parra Z.
+# Date: 10/12/2017
+# License: MIT License
+# Hardware:
+#       - Raspberry Pi B+
+# Description: Project to measure the CPU and GPU temperatures in the
+# Raspberry, then publish in the data in the cloud using gspread.
+# Link: https://github.com/mparra-mpz/week-of-code/wiki/Week-2:-Rasberry-Temperatures
+#
+
 import subprocess
 import re
 import gspread

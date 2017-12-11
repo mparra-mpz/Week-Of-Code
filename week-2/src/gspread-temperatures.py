@@ -22,7 +22,7 @@ from optparse import OptionParser
 def get_data(command):
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     (output, err) = proc.communicate()
-    data = output.split('\n')[0]
+    data = output.split("\n")[0]
     return data
 
 def menu():
@@ -43,15 +43,15 @@ if __name__ == "__main__":
             timestamp = get_data('date +"%d/%m/%Y %H:%M:%S"')
 
             # Get the CPU temperature.
-            num = get_data('cat /sys/class/thermal/thermal_zone0/temp')
-            aux = re.sub(r'\D', '', num)
+            num = get_data("cat /sys/class/thermal/thermal_zone0/temp")
+            aux = re.sub(r"\D", "", num)
             aux = float(cpu) / 1000
             cpu = "%.2f" % aux
             cpu = cpu.replace(".",",")
 
             # Get the GPU temperature.
-            num = get_data('/opt/vc/bin/vcgencmd measure_temp')
-            aux = re.sub(r'\D', '', num)
+            num = get_data("/opt/vc/bin/vcgencmd measure_temp")
+            aux = re.sub(r"\D", "", num)
             aux = float(gpu) / 10
             gpu = "%.2f" % aux
             gpu = gpu.replace(".",",")
@@ -59,10 +59,10 @@ if __name__ == "__main__":
             print "%s %s %s" % (timestamp, cpu, gpu)
 
             # Send information to google docs.
-            scope = ['https://spreadsheets.google.com/feeds']
+            scope = ["https://spreadsheets.google.com/feeds"]
             credentials = ServiceAccountCredentials.from_json_keyfile_name(credential_file, scope)
             connection= gspread.authorize(credentials)
-            spreadsheet = connection.open('Raspberry Temperature')
+            spreadsheet = connection.open("Raspberry")
             worksheet = spreadsheet.get_worksheet(0)
             worksheet.append_row((timestamp, cpu, gpu))
 

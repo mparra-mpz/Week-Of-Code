@@ -44,15 +44,19 @@ if __name__ == "__main__":
 
             # Get the CPU temperature.
             num = get_data('cat /sys/class/thermal/thermal_zone0/temp')
-            cpu = re.sub(r'\D', '', num)
-            cpu = float(cpu) / 1000
+            aux = re.sub(r'\D', '', num)
+            aux = float(cpu) / 1000
+            cpu = "%.2f" % aux
+            cpu = cpu.replace(".",",")
 
             # Get the GPU temperature.
             num = get_data('/opt/vc/bin/vcgencmd measure_temp')
-            gpu = re.sub(r'\D', '', num)
-            gpu = float(gpu) / 10
+            aux = re.sub(r'\D', '', num)
+            aux = float(gpu) / 10
+            gpu = "%.2f" % aux
+            gpu = gpu.replace(".",",")
 
-            print "%s %.2f %.2f" % (timestamp, cpu, gpu)
+            print "%s %s %s" % (timestamp, cpu, gpu)
 
             # Send information to google docs.
             scope = ['https://spreadsheets.google.com/feeds']

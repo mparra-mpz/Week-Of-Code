@@ -16,16 +16,16 @@
 int main(void) {
     // Wiring Pi library setup.
     wiringPiSetup();
-    // Set pin BCM 21 (pin 29) as output.
+    // Set pin GPIO 21 (pin 29) as output.
     pinMode(29, OUTPUT);
     while(1) {
-        // Turn on the pin 29.
+        // Turn on the GPIO 21.
         digitalWrite(29, HIGH);
-        // Pause during 0.5 seconds.
-        delay(500);
-        // Turn off the pin 29.
+        // Pause during 1 second.
+        delay(1000);
+        // Turn off the GPIO 21.
         digitalWrite(29,  LOW);
-        // Pause during 0.5 seconds.
+        // Pause during 1 second.
         delay (500) ;
     }
 

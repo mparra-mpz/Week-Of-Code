@@ -38,11 +38,13 @@ def menu():
     return options.credential_file
 
 def get_temperature(port):
+    # Read all the data in the serial port and store in a string.
     data = ""
     rcv = port.readline()
     while rcv != "":
         data = data + rcv
         rcv = port.readline()
+    # Calculate the average temperature read from the serial port.
     temperature = 0.0
     sample = 0
     data_list = data.split("\n")
@@ -51,27 +53,20 @@ def get_temperature(port):
             sample = sample + 1
             temperature = temperature + float(element)
     temperature = temperature / sample
+    # Just a pretty presentation.
     ans = "%.3f" % temperature
     ans = ans.replace(".",",")
     return ans
 
 
 if __name__ == "__main__":
-    try:
-        credential_file = menu()
+    credential_file = menu()
 
-        # Open Serial connection.
-        port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=3.0)
+    # Open Serial connection.
+    port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=3.0)
 
-        # Stablish connection with google docs.
-        scope = ["https://spreadsheets.google.com/feeds"]
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(credential_file, scope)
-        connection= gspread.authorize(credentials)
-        # Select the spreadsheet and worksheet.
-        spreadsheet = connection.open("Raspberry")
-        worksheet = spreadsheet.get_worksheet(1)
-
-        while True:
+    while True:
+        try:
             # Get the timestamp.
             timestamp = get_data('date +"%d/%m/%Y %H:%M:%S"')
 
@@ -81,17 +76,28 @@ if __name__ == "__main__":
             # Display the information.
             print "Timestamp: %s -- Temperature: %s." % (timestamp, temperature)
 
+            # Stablish connection with google docs.
+            scope = ["https://spreadsheets.google.com/feeds"]
+            credentials = ServiceAccountCredentials.from_json_keyfile_name(credential_file, scope)
+            connection= gspread.authorize(credentials)
+            # Select the spreadsheet and worksheet.
+            spreadsheet = connection.open("Raspberry")
+            worksheet = spreadsheet.get_worksheet(1)
             # Publish the information in the worksheet.
             worksheet.append_row((timestamp, temperature))
 
             # Pause during 1 minute.
             print "Information published in the cloud. Pause the program during 1 minute."
             time.sleep(60)
-    except KeyboardInterrupt:
-        print "Finishing the program execution."
-        port.close()
-        sys.exit()
-    except:
-        print "Unexpected error:", sys.exc_info()[0]
-        port.close()
-        raise
+        except KeyboardInterrupt:
+            print "Finishing the program execution."
+            port.close()
+            sys.exit()
+        except httplib2.ServerNotFoundError:
+            print "Error: ", sys.exc_info()[0]
+            print "Connection with google docs fail. Pause the program during 1 minute."
+            time.sleep(60)
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
+            port.close()
+            raise

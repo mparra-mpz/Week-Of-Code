@@ -36,18 +36,9 @@ def menu():
     return options.credential_file
 
 if __name__ == "__main__":
-    try:
-        credential_file = menu()
-
-        # Stablish connection with google docs.
-        scope = ["https://spreadsheets.google.com/feeds"]
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(credential_file, scope)
-        connection= gspread.authorize(credentials)
-        # Select the spreadsheet and worksheet.
-        spreadsheet = connection.open("Raspberry")
-        worksheet = spreadsheet.get_worksheet(0)
-
-        while True:
+    credential_file = menu()
+    while True:
+        try:
             # Get the timestamp.
             timestamp = get_data('date +"%d/%m/%Y %H:%M:%S"')
 
@@ -67,15 +58,25 @@ if __name__ == "__main__":
 
             print "%s %s %s." % (timestamp, cpu, gpu)
 
+            # Stablish connection with google docs.
+            scope = ["https://spreadsheets.google.com/feeds"]
+            credentials = ServiceAccountCredentials.from_json_keyfile_name(credential_file, scope)
+            connection= gspread.authorize(credentials)
+            # Select the spreadsheet and worksheet.
+            spreadsheet = connection.open("Raspberry")
+            worksheet = spreadsheet.get_worksheet(0)
             # Publish the information in the worksheet.
             worksheet.append_row((timestamp, cpu, gpu))
 
             # Pause during 1 minute.
             print "Information published in the cloud. Pause the program during 1 minute."
             time.sleep(60)
-    except KeyboardInterrupt:
-        print "Finishing the program execution."
-        sys.exit()
-    except:
-        print "Unexpected error:", sys.exc_info()[0]
-        raise
+        except KeyboardInterrupt:
+            print "Finishing the program execution."
+            sys.exit()
+        except httplib2.ServerNotFoundError:
+            print "Connection with google docs fail. Pause the program during 1 minute."
+            time.sleep(60)
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
+            raise

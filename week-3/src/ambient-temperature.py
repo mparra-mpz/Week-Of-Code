@@ -57,10 +57,21 @@ def get_temperature(port):
 
 
 if __name__ == "__main__":
-    credential_file = menu()
-    port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=3.0)
-    while True:
-        try:
+    try:
+        credential_file = menu()
+
+        # Open Serial connection.
+        port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=3.0)
+
+        # Stablish connection with google docs.
+        scope = ["https://spreadsheets.google.com/feeds"]
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(credential_file, scope)
+        connection= gspread.authorize(credentials)
+        # Select the spreadsheet and worksheet.
+        spreadsheet = connection.open("Raspberry")
+        worksheet = spreadsheet.get_worksheet(1)
+
+        while True:
             # Get the timestamp.
             timestamp = get_data('date +"%d/%m/%Y %H:%M:%S"')
 
@@ -68,25 +79,19 @@ if __name__ == "__main__":
             temperature = get_temperature(port)
 
             # Display the information.
-            print "Timestamp: %s -- Temperature: %s" % (timestamp, temperature)
+            print "Timestamp: %s -- Temperature: %s." % (timestamp, temperature)
 
-            # Send information to google docs.
-            scope = ["https://spreadsheets.google.com/feeds"]
-            credentials = ServiceAccountCredentials.from_json_keyfile_name(credential_file, scope)
-            connection= gspread.authorize(credentials)
-            spreadsheet = connection.open("Raspberry")
-            worksheet = spreadsheet.get_worksheet(1)
+            # Publish the information in the worksheet.
             worksheet.append_row((timestamp, temperature))
 
             # Pause during 1 minute.
-            print "Information published in the cloud. Pause the program during 1 minute"
+            print "Information published in the cloud. Pause the program during 1 minute."
             time.sleep(60)
-        except KeyboardInterrupt:
-            print "Finishing the program execution."
-            port.close()
-            sys.exit()
-        except:
-            print "Unexpected error:", sys.exc_info()[0]
-            port.close()
-            raise
-
+    except KeyboardInterrupt:
+        print "Finishing the program execution."
+        port.close()
+        sys.exit()
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
+        port.close()
+        raise

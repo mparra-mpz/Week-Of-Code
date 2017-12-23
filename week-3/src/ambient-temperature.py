@@ -93,10 +93,6 @@ if __name__ == "__main__":
             print "Finishing the program execution."
             port.close()
             sys.exit()
-        except httplib2.ServerNotFoundError:
-            print "Error: ", sys.exc_info()[0]
-            print "Connection with google docs fail. Pause the program during 1 minute."
-            time.sleep(60)
         except:
             print "Unexpected error:", sys.exc_info()[0]
             port.close()

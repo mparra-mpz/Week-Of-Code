@@ -8,11 +8,9 @@
  * Description: C++ library draft for DHT11 DFRobot Sensor.
  */
 
-#define pause 10000 // 1 minute.
+#define pause 10000 // 10 seconds.
 int dataPin = 4;
-unsigned long ini;
-unsigned long fin;
-int timeout = 80;
+int timeout = 100;
 
 void setup() {
   Serial.begin(9600);
@@ -21,6 +19,20 @@ void setup() {
 }
 
 void loop() {
+  unsigned long ini;
+  unsigned long fin;
+  
+  // Buffer to receive data.
+  uint8_t bits[5];
+  uint8_t pos = 7;
+  uint8_t idx = 0;
+  unsigned long timeStore[40];
+  
+  // Empty buffer.
+  for (int i=0; i< 5; i++) {
+    bits[i] = 0;
+  }
+  
   /*
    * MCU START SIGNAL
    * The MCU pull down the voltage in the digital pin for at least 18[ms] to
@@ -72,17 +84,6 @@ void loop() {
    * decimal humidity, 8 bits for integral temperature, 8 bits for decimal
    * temperature and finally 8 bits for parity check.
    */
-  // Buffer to receive data.
-  uint8_t bits[5];
-  uint8_t pos = 7;
-  uint8_t idx = 0;
-  unsigned long timeStore[40];
-  
-  // Empty buffer.
-  for (int i=0; i< 5; i++) {
-    bits[i] = 0;
-  }
-
   for (int i=0; i<40; i++) {
     // Low voltage level signal detection.
     ini = micros();

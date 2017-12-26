@@ -15,7 +15,6 @@
 
 void setup() {
   Serial.begin(9600);
-  // Basic information.
   Serial.println("DHT TEST PROGRAM ");
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHT11_VERSION);
@@ -27,30 +26,40 @@ void loop() {
   DHT11 sensor = DHT11(DHT11_PIN);
   DHT11_STATE state;
   
-  Serial.print("DHT11, \t");
   state = sensor.read();
   
-  // Check if data is valid.
   switch (state) {
     case OK:  
       Serial.print("OK,\t");
       break;
     case ERROR_CHECKSUM:
-      Serial.print("Checksum error,\t");
+      Serial.println("Checksum ERROR");
       break;
-    case ERROR_TIMEOUT:
-      Serial.print("Time out error,\t");
+    case ERROR_CONNECTION_L:
+      Serial.println("Connection ERROR LOW signal");
+      break;
+    case ERROR_CONNECTION_H:
+      Serial.println("Connection ERROR HIGH signal");
+      break;
+    case ERROR_ACK_L:
+      Serial.println("ACK ERROR LOW signal");
+      break;
+    case ERROR_ACK_H:
+      Serial.println("ACK ERROR HIG signal");
       break;
     default:
-      Serial.print("Unknown error,\t");
+      Serial.println("Unknown ERROR");
       break;
   }
+
+  if (state == OK) {
+    float humidity = sensor.getHumidity();
+    float temperature = sensor.getTemperature();
+    Serial.print("DHT11, \t");
+    Serial.print(humidity);
+    Serial.print(",\t");
+    Serial.println(temperature);
+  }
   
-  // Display data.
-  float humidity = sensor.getHumidity();
-  float temperature = sensor.getTemperature();
-  Serial.print(humidity);
-  Serial.print(",\t");
-  Serial.println(temperature);
-  delay(5000);
+  delay(10000);
 }

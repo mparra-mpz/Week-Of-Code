@@ -13,11 +13,17 @@
 DHT11::DHT11(int _pin) {
     // Initial state.
     this->pin = _pin;
+    // The timeout for the signal detection is 80 [us].
+    this->timeout = 80;
     this->humidity = -1.0;
     this->temperature = -1.0;
 }
 
 DHT11_STATE DHT11::read() {
+    //Measure elapsed time.
+    unsigned long ini;
+    unsigned long fin;
+
     /*
      * MCU START SIGNAL
      * Pull down the voltage in the digital pin for at least 18 ms to let DHT11
@@ -37,17 +43,20 @@ DHT11_STATE DHT11::read() {
      * then send a high voltage level signal to the digital pin and keeps
      * during 80[us] meanwhile DHT11is preparing to send the data.
      */
-    // TODO wait 80[us] instead of 10.000 clock cycles.
-    unsigned int loopCnt = 10000;
+    // Low voltage signal detection.
+    ini = micros();
     while (digitalRead(this->pin) == LOW) {
-        if (loopCnt-- == 0) {
+        fin = micros();
+        if ((fin-ini) > this->timeout) {
             return ERROR_TIMEOUT;
         }
     }
-    // TODO wait 80[us] instead of 10.000 clock cycles.
-    loopCnt = 10000;
+
+    // High voltage signal detection.
+    ini = micros();
     while (digitalRead(this->pin) == HIGH) {
-        if (loopCnt-- == 0) {
+        fin = micros();
+        if ((fin-ini) > this->timeout) {
             return ERROR_TIMEOUT;
         }
     }
@@ -72,27 +81,23 @@ DHT11_STATE DHT11::read() {
     }
 
     for (int i=0; i<40; i++) {
-        // Low voltage level signal.
-        loopCnt = 10000;
+        // Low voltage signal detection.
+        ini = micros();
         while (digitalRead(this->pin) == LOW) {
-            if (loopCnt-- == 0) {
+            fin = micros();
+            if ((fin-ini) > this->timeout) {
                 return ERROR_TIMEOUT;
             }
         }
 
-        // Mesure high voltage level signal duration.
-        unsigned long ini = micros();
-
-        // High voltage level signal.
-        loopCnt = 10000;
+        // Mesure high voltage signal duration.
+        ini = micros();
         while (digitalRead(this->pin) == HIGH) {
-            if (loopCnt-- == 0) {
+            fin = micros();
+            if ((fin-ini) > this->timeout) {
                 return ERROR_TIMEOUT;
             }
         }
-
-        // Mesure high voltage level signal duration.
-        unsigned long fin = micros();
 
         // If high voltage level signal take more than 50[us], the bit is 1.
         if ((fin-ini) > 50) {

@@ -13,13 +13,15 @@
 #include <DHT11.h>
 #define DHT11_PIN 4
 
+unsigned long iter = 0;
+unsigned long error = 0;
+
 void setup() {
   Serial.begin(9600);
   Serial.println("DHT TEST PROGRAM ");
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHT11_VERSION);
   Serial.println();
-  Serial.println("Type,\tstatus,\tHumidity (%),\tTemperature (C)");
 }
 
 void loop() {
@@ -30,36 +32,45 @@ void loop() {
   
   switch (state) {
     case OK:  
-      Serial.print("OK,\t");
+      Serial.print("OK");
       break;
     case ERROR_CHECKSUM:
-      Serial.println("Checksum ERROR");
+      Serial.print("Checksum ERROR");
       break;
     case ERROR_CONNECTION_L:
-      Serial.println("Connection ERROR LOW signal");
+      Serial.print("Connection ERROR LOW signal");
       break;
     case ERROR_CONNECTION_H:
-      Serial.println("Connection ERROR HIGH signal");
+      Serial.print("Connection ERROR HIGH signal");
       break;
     case ERROR_ACK_L:
-      Serial.println("ACK ERROR LOW signal");
+      Serial.print("ACK ERROR LOW signal");
       break;
     case ERROR_ACK_H:
-      Serial.println("ACK ERROR HIG signal");
+      Serial.print("ACK ERROR HIG signal");
       break;
     default:
-      Serial.println("Unknown ERROR");
+      Serial.print("Unknown ERROR");
       break;
   }
 
   if (state == OK) {
-    float humidity = sensor.getHumidity();
-    float temperature = sensor.getTemperature();
-    Serial.print("DHT11, \t");
-    Serial.print(humidity);
-    Serial.print(",\t");
-    Serial.println(temperature);
+    iter++;
+  } else {
+    error++;
   }
+  
+  float humidity = sensor.getHumidity();
+  float temperature = sensor.getTemperature();
+  Serial.print(" Humidity (%): ");
+  Serial.print(humidity);
+  Serial.print(" Temperature (°C): ");
+  Serial.print(temperature);
+  Serial.print(" Iteration: ");
+  Serial.print(iter);
+  Serial.print(" Error: ");
+  Serial.print(error);
+  Serial.print("\n");
   
   delay(10000);
 }

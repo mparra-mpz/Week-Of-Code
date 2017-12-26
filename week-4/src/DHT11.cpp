@@ -13,8 +13,8 @@
 DHT11::DHT11(int _pin) {
     // Initial state.
     this->pin = _pin;
-    // The timeout for the signal detection is 80 [us].
-    this->timeout = 80;
+    // The timeout for the signal detection is 100[us].
+    this->timeout = 100;
     this->humidity = -1.0;
     this->temperature = -1.0;
 }
@@ -24,11 +24,20 @@ DHT11_STATE DHT11::read() {
     unsigned long ini;
     unsigned long fin;
 
+    // Bit handling.
+    uint8_t pos = 7;
+    uint8_t idx = 0;
+
+    // Buffer to 0.
+    for (int i=0; i< 5; i++) {
+        this->bits[i] = 0;
+    }
+
     /*
      * MCU START SIGNAL
-     * Pull down the voltage in the digital pin for at least 18 ms to let DHT11
-     * detect the signal. Pull up the digital pin and wait between 20[us] to
-     * 40[us] for DHT11 response.
+     * The MCU pull down the voltage in the digital pin for at least 18[ms] to
+     * let DHT11 detect the signal. Pull up the digital pin and wait between
+     * 20[us] to 40[us] for DHT11 response.
      */
     pinMode(this->pin, OUTPUT);
     digitalWrite(this->pin, LOW);
@@ -39,16 +48,16 @@ DHT11_STATE DHT11::read() {
     
     /*
      * DHT11 RESPONSE SIGNAL
-     * Send a low voltage level signal to the digital pin which lasts 80[us],
-     * then send a high voltage level signal to the digital pin and keeps
-     * during 80[us] meanwhile DHT11is preparing to send the data.
+     * The DHT11 send a low voltage level signal to the digital pin which lasts
+     * 80[us], then send a high voltage level signal to the digital pin and
+     * keeps during 80[us] meanwhile DHT11is preparing to send the data.
      */
     // Low voltage signal detection.
     ini = micros();
     while (digitalRead(this->pin) == LOW) {
         fin = micros();
         if ((fin-ini) > this->timeout) {
-            return ERROR_TIMEOUT;
+            return ERROR_CONNECTION_L;
         }
     }
 
@@ -57,7 +66,7 @@ DHT11_STATE DHT11::read() {
     while (digitalRead(this->pin) == HIGH) {
         fin = micros();
         if ((fin-ini) > this->timeout) {
-            return ERROR_TIMEOUT;
+            return ERROR_CONNECTION_H;
         }
     }
     
@@ -72,21 +81,13 @@ DHT11_STATE DHT11::read() {
      * decimal humidity, 8 bits for integral temperature, 8 bits for decimal
      * temperature and finally 8 bits for a checksum verification.
      */
-    uint8_t pos = 7;
-    uint8_t idx = 0;
-
-    // Initialize buffer to 0.
-    for (int i=0; i< 5; i++) {
-        this->bits[i] = 0;
-    }
-
     for (int i=0; i<40; i++) {
         // Low voltage signal detection.
         ini = micros();
         while (digitalRead(this->pin) == LOW) {
             fin = micros();
             if ((fin-ini) > this->timeout) {
-                return ERROR_TIMEOUT;
+                return ERROR_ACK_L;
             }
         }
 
@@ -95,7 +96,7 @@ DHT11_STATE DHT11::read() {
         while (digitalRead(this->pin) == HIGH) {
             fin = micros();
             if ((fin-ini) > this->timeout) {
-                return ERROR_TIMEOUT;
+                return ERROR_ACK_H;
             }
         }
 

@@ -124,12 +124,16 @@ DHT11_STATE DHT11::read() {
 }
 
 float DHT11::getHumidity() {
+    // MSB always will be 0, so convert to 0 to reduce errors.
+    this->bits[0] &= 0x7F;
     // For DHT11 this->bits[1] always will be 0.
     this->humidity = this->bits[0] * 1.0;
     return this->humidity;
 }
 
 float DHT11::getTemperature() {
+    // MSB always will be 0, so convert to 0 to reduce errors.
+    this->bits[2] &= 0x7F;
     // For DHT11 this->bits[3] always will be 0.
     this->temperature = this->bits[2] * 1.0;
     return this->temperature;

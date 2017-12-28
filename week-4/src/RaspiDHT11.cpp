@@ -17,8 +17,8 @@ void main () {
     std::cout << "=================================================\n";
     std::cout << "\n";
 
-    // GPIO 15 is pin 16.
-    DHT11* sensor = new DHT11(16);
+    // GPIO 18 is pin 1.
+    DHT11* sensor = new DHT11(1);
     DHT11_STATE state = sensor->read();
 
     if (state == OK) {

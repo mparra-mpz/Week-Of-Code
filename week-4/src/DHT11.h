@@ -1,9 +1,9 @@
 /*
  * Author: Manuel Parra Z.
- * Date: 23/12/2017
+ * Date: 27/12/2017
  * License: MIT License
  * Hardware:
- *      - Arduino ONE R3.
+ *      - Raspberry Pi B+.
  *      - DHT11 DFRobot Sensor.
  * Description: C++ library for DHT11 DFRobot Sensor.
  */
@@ -13,7 +13,7 @@
 
 #define DHT11_VERSION "0.0.1"
 
-#include "Arduino.h"
+#include <wiringPi.h>
 
 enum DHT11_STATE {
     OK,

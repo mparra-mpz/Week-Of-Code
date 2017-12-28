@@ -13,7 +13,7 @@
 
 #define DHT11_VERSION "0.0.1"
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 enum DHT11_STATE {
     OK,

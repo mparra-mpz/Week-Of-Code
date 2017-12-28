@@ -29,7 +29,7 @@ class DHT11 {
     private:
         int pin;
         uint8_t bits[5];
-        int timeout;
+        unsigned long timeout;
         float humidity;
         float temperature;
 

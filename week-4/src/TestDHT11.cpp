@@ -32,22 +32,25 @@ int main () {
             std::cout << " -- ";
             std::cout << "Humidity (%): " << humidity;
             std::cout << ".\n";
-	    ok++;
+            ok++;
         } else {
             std::cout << "ERROR CODE: " << state;
             std::cout << ".\n";
-	    error++;
+            error++;
         }
 
         sleep(10);
     }
 
-    std::cout << "\nStatistics ";
-    std::cout << "OK SIGNALS: " << ok;
-    std::cout << " -- ";
-    std::cout << "ERROR SIGNALS: " << error;
+    std::cout << "=================================================\n";
+    std::cout << "                S T A T I S T I C S              \n";
     std::cout << ".\n";
-
+    std::cout << "OK Signals: " << ok;
+    std::cout << " -- ";
+    std::cout << "ERROR Signals: " << error;
+    std::cout << ".\n";
+    std::cout << "=================================================\n";
+   
     delete(sensor);
 
     return 0;

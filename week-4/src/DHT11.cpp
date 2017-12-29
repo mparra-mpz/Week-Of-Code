@@ -35,6 +35,9 @@ DHT11_STATE DHT11::read() {
         this->bits[i] = 0;
     }
 
+    // Set the maximum priority to the program.
+    int prior = piHiPri(99);
+
     /*
      * MCU START SIGNAL
      * The MCU pull down the voltage in the digital pin for at least 18[ms] to

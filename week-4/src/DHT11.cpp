@@ -19,6 +19,8 @@ DHT11::DHT11(int _pin) {
     this->humidity = -1.0;
     this->temperature = -1.0;
     wiringPiSetup();
+    // Set the maximum priority to the program.
+    this->priority = piHiPri(99);
 }
 
 DHT11_STATE DHT11::read() {
@@ -34,9 +36,6 @@ DHT11_STATE DHT11::read() {
     for (int i=0; i< 5; i++) {
         this->bits[i] = 0;
     }
-
-    // Set the maximum priority to the program.
-    int prior = piHiPri(99);
 
     /*
      * MCU START SIGNAL
@@ -142,4 +141,8 @@ float DHT11::getTemperature() {
     // For DHT11 this->bits[3] always will be 0.
     this->temperature = this->bits[2] * 1.0;
     return this->temperature;
+}
+
+int DHT11::getPriority() {
+    return this->priority;
 }

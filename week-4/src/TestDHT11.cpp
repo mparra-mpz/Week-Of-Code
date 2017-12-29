@@ -20,6 +20,8 @@ int main () {
 
     // GPIO 18 is pin 1.
     DHT11* sensor = new DHT11(1);
+    std::cout << "Real Time: " << sensor->getPriority() << "\n";
+
     int ok = 0;
     int error = 0;
     for (int i= 0; i < 100; i++) {
@@ -38,13 +40,13 @@ int main () {
             std::cout << ".\n";
             error++;
         }
-
+        
         sleep(10);
     }
 
     std::cout << "=================================================\n";
     std::cout << "                S T A T I S T I C S              \n";
-    std::cout << ".\n";
+    std::cout << "\n";
     std::cout << "OK Signals: " << ok;
     std::cout << " -- ";
     std::cout << "ERROR Signals: " << error;

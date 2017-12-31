@@ -32,13 +32,13 @@ class DHT11 {
         unsigned long timeout;
         float humidity;
         float temperature;
-        int priority;
+        bool realTime;
 
     public:
         DHT11(int _pin);
         DHT11_STATE read();
         float getHumidity();
         float getTemperature();
-        int getPriority();
+        bool isRealTime();
 };
 #endif

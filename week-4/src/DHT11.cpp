@@ -12,15 +12,20 @@
 #include "DHT11.h"
 
 DHT11::DHT11(int _pin) {
-    // Initial state.
     this->pin = _pin;
-    // The timeout for the signal detection is 100[us].
-    this->timeout = 100;
     this->humidity = -1.0;
     this->temperature = -1.0;
+    this->realTime = false;
+    // The timeout for the signal detection is 100[us].
+    this->timeout = 100;
+
+    // Initialize wiring pi.
     wiringPiSetup();
+    
     // Set the maximum priority to the program.
-    this->priority = piHiPri(99);
+    int priority = piHiPri(99);
+    // Check if real time status.
+    this->realTime = ((priority == 0) ? true : false);
 }
 
 DHT11_STATE DHT11::read() {
@@ -143,6 +148,6 @@ float DHT11::getTemperature() {
     return this->temperature;
 }
 
-int DHT11::getPriority() {
-    return this->priority;
+bool DHT11::isRealTime() {
+    return this->realTime;
 }

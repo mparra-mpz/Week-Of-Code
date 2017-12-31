@@ -20,7 +20,7 @@ int main () {
 
     // GPIO 18 is pin 1.
     DHT11* sensor = new DHT11(1);
-    std::cout << "Real Time: " << sensor->getPriority() << "\n";
+    std::cout << "Real Time: " << sensor->isRealTime() << "\n";
 
     int ok = 0;
     int error = 0;

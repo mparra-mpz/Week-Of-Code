@@ -13,8 +13,6 @@
 
 #define DHT11_VERSION "0.0.1"
 
-#include <wiringPi.h>
-
 enum DHT11_STATE {
     OK,
     ERROR_CHECKSUM,

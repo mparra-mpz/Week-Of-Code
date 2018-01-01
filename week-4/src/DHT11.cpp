@@ -7,9 +7,11 @@
  *      - DHT11 DFRobot Sensor.
  * Description: C++ library for DHT11 DFRobot Sensor.
  */
-
-#include <cstdint>
 #include "DHT11.h"
+#include <cstdint>
+#include <chrono>
+#include <time.h>
+#include <wiringPi.h>
 
 DHT11::DHT11(int _pin) {
     this->pin = _pin;
@@ -30,8 +32,10 @@ DHT11::DHT11(int _pin) {
 
 DHT11_STATE DHT11::read() {
     //Measure elapsed time.
-    unsigned long ini;
-    unsigned long fin;
+    auto ini;
+    auto fin;
+    // Time structure.
+    struct timespec wait;
 
     // Bit handling.
     uint8_t pos = 7;
@@ -50,10 +54,19 @@ DHT11_STATE DHT11::read() {
      */
     pinMode(this->pin, OUTPUT);
     digitalWrite(this->pin, LOW);
-    delay(20);
+
+    // Pause during 20[ms].
+    wait.tv_sec = 0;
+    wait.tv_nsec = 20 * 1000000L;
+    nanosleep(&wait, (struct timespec *)NULL);
+
     digitalWrite(this->pin, HIGH);
     pinMode(this->pin, INPUT);
-    delayMicroseconds(40);
+
+    // Pause during 40[us].
+    wait.tv_sec = 0;
+    wait.tv_nsec = 40 * 1000L;
+    nanosleep(&wait, (struct timespec *)NULL);
     
     /*
      * DHT11 RESPONSE SIGNAL
@@ -62,19 +75,19 @@ DHT11_STATE DHT11::read() {
      * keeps during 80[us] meanwhile DHT11is preparing to send the data.
      */
     // Low voltage signal detection.
-    ini = micros();
+    ini = std::chrono::high_resolution_clock::now();
     while (digitalRead(this->pin) == LOW) {
-        fin = micros();
-        if ((fin-ini) > this->timeout) {
+        fin = std::chrono::high_resolution_clock::now();
+        if (std::chrono::duration_cast<std::chrono::microseconds>(fin-ini).count() > this->timeout) {
             return ERROR_CONNECTION_L;
         }
     }
 
     // High voltage signal detection.
-    ini = micros();
+    ini = std::chrono::high_resolution_clock::now();
     while (digitalRead(this->pin) == HIGH) {
-        fin = micros();
-        if ((fin-ini) > this->timeout) {
+        fin = std::chrono::high_resolution_clock::now();
+        if (std::chrono::duration_cast<std::chrono::microseconds>(fin-ini).count() > this->timeout) {
             return ERROR_CONNECTION_H;
         }
     }
@@ -92,25 +105,25 @@ DHT11_STATE DHT11::read() {
      */
     for (int i=0; i<40; i++) {
         // Low voltage signal detection.
-        ini = micros();
+        ini = std::chrono::high_resolution_clock::now();
         while (digitalRead(this->pin) == LOW) {
-            fin = micros();
-            if ((fin-ini) > this->timeout) {
+            fin = std::chrono::high_resolution_clock::now();
+            if (std::chrono::duration_cast<std::chrono::microseconds>(fin-ini).count() > this->timeout) {
                 return ERROR_ACK_L;
             }
         }
 
         // Mesure high voltage signal duration.
-        ini = micros();
+        ini = std::chrono::high_resolution_clock::now();
         while (digitalRead(this->pin) == HIGH) {
-            fin = micros();
-            if ((fin-ini) > this->timeout) {
+            fin = std::chrono::high_resolution_clock::now();
+            if (std::chrono::duration_cast<std::chrono::microseconds>(fin-ini).count() > this->timeout) {
                 return ERROR_ACK_H;
             }
         }
 
         // If high voltage level signal take more than 50[us], the bit is 1.
-        if ((fin-ini) > 50) {
+        if (std::chrono::duration_cast<std::chrono::microseconds>(fin-ini).count() > 50) {
             this->bits[idx] |= (1 << pos);
         }
 

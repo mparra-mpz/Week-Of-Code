@@ -13,6 +13,8 @@
 
 #define DHT11_VERSION "0.0.1"
 
+#include <cstdint>
+
 enum DHT11_STATE {
     OK,
     ERROR_CHECKSUM,

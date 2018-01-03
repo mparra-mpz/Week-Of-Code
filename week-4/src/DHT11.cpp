@@ -8,7 +8,6 @@
  * Description: C++ library for DHT11 DFRobot Sensor.
  */
 #include "DHT11.h"
-#include <cstdint>
 #include <chrono>
 #include <time.h>
 #include <wiringPi.h>

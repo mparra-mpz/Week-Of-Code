@@ -31,8 +31,8 @@ DHT11::DHT11(int _pin) {
 
 DHT11_STATE DHT11::read() {
     //Measure elapsed time.
-    auto ini;
-    auto fin;
+    std::chrono::high_resolution_clock::time_point ini;
+    std::chrono::high_resolution_clock::time_point fin;
     // Time structure.
     struct timespec wait;
 

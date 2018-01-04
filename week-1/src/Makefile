@@ -7,13 +7,13 @@
 #
 
 EXEC = BLINK
-#SCRIPTS =
+SCRIPTS =
 
 CC = gcc
-#CXX =
+CPP =
 
 CFLAGS = -c -g -Wall
-#CXXFLAGS =
+CPPFLAGS =
 
 LDFLAGS = -lwiringPi
 
@@ -22,15 +22,24 @@ INCLUDES =
 
 .PHONY: all clean
 
-OBJECTS = $(SOURCES:.c=.o)
+COBJECTS = $(SOURCES:.c=.o)
+# CPPOBJECTS = $(SOURCES:.cpp=.o)
 
 %.o: %.c $(INCLUDES)
 	@echo " ... compile c objects from the sources."
 	$(CC) $(CFLAGS) $< -o $@
 
-all: $(OBJECTS)
+# %.o: %.cpp $(INCLUDES)
+# 	@echo " ... compile c++ objects from the sources."
+# 	$(CPP) $(CPPFLAGS) $< -o $@
+
+all: $(COBJECTS)
 	@echo " ... compile and link c binary executables."
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $(EXEC)
+	$(CC) $(COBJECTS) $(LDFLAGS) -o $(EXEC)
+
+# all: $(CPPOBJECTS)
+# 	@echo " ... compile and link c++ binary executables."
+# 	$(CPP) $(CPPOBJECTS) $(LDFLAGS) -o $(EXEC)
 
 clean:
 	@echo " . . . cleaning objects and executables."

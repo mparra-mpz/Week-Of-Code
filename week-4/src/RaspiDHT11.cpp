@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include <unistd.h>
 #include "DHT11.h"
 
@@ -20,7 +21,8 @@ int main () {
 
     // GPIO 18 is pin 1.
     DHT11* sensor = new DHT11(1);
-    std::cout << "Real Time: " << sensor->isRealTime() << "\n";
+    std::string realTime = ((sensor->isRealTime() == true) ? "ENABLE" : "DISABLE");
+    std::cout << "Real Time: " << realTime << "\n";
 
     int ok = 0;
     int error = 0;

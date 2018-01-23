@@ -3,7 +3,8 @@
 # Date: 03/01/2018
 # License: MIT License
 # Hardware:
-# Description:
+#     - Raspberry Pi B+.
+# Description: Project to turn on/off a simple led.
 #
 
 EXEC = BLINK
@@ -20,8 +21,6 @@ LDFLAGS = -lwiringPi
 SOURCES = blink.c
 INCLUDES =
 
-.PHONY: all clean
-
 COBJECTS = $(SOURCES:.c=.o)
 # CPPOBJECTS = $(SOURCES:.cpp=.o)
 
@@ -33,6 +32,7 @@ COBJECTS = $(SOURCES:.c=.o)
 # 	@echo " ... compile c++ objects from the sources."
 # 	$(CPP) $(CPPFLAGS) $< -o $@
 
+.PHONY: all
 all: $(COBJECTS)
 	@echo " ... compile and link c binary executables."
 	$(CC) $(COBJECTS) $(LDFLAGS) -o $(EXEC)
@@ -41,6 +41,7 @@ all: $(COBJECTS)
 # 	@echo " ... compile and link c++ binary executables."
 # 	$(CPP) $(CPPOBJECTS) $(LDFLAGS) -o $(EXEC)
 
+.PHONY: clean
 clean:
 	@echo " . . . cleaning objects and executables."
 	-rm -f *.o
